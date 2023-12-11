@@ -36,3 +36,52 @@ You then check if new numbers are in contact with old symbols etc
 
 '''
 
+def set_number(number_string, number_position_list, current_numbers):
+    if number_string != '':
+        number = int(number_string)
+        current_numbers.update({number: number_position_list})
+
+
+
+with open("day_3.txt") as text:
+    lines = [line.strip() for line in text]
+    print(lines)
+    current_numbers = {}
+    previous_numbers = {}
+    number_position_list = []
+    current_symbols = []
+    previous_symbols = []
+    number_string = ''
+    for line in lines:
+        character_index = 0
+        previous_symbols = current_symbols
+        current_symbols = []
+        previous_numbers = current_numbers
+        current_numbers = {}
+        for character in line:
+            if character == ".":
+                set_number(number_string, number_position_list, current_numbers)
+                number_string = ''
+                number_position_list = []
+                character_index += 1
+                continue
+            elif character.isdigit() == True:
+                number_string += str(character)
+                number_position_list.append(character_index)
+                character_index += 1
+            else:
+                #character must be a symbol
+                if character_index != 0:
+                    minus_index = character_index - 1
+                else:
+                    minus_index = 0
+                plus_index = character_index + 1
+                current_symbols.append(minus_index)
+                current_symbols.append(character_index)
+                current_symbols.append(plus_index)
+                set_number(number_string, number_position_list, current_numbers)
+                number_string = ''
+                number_position_list = []
+                character_index += 1
+
+    print(current_numbers)
